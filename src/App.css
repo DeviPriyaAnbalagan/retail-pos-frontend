@@ -1,0 +1,126 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f5f6fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.page-container {
+  padding: 24px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.pos-layout {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr;
+  gap: 24px;
+}
+
+.products-section,
+.cart-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.product-card h3 {
+  margin-top: 0;
+}
+
+button {
+  cursor: pointer;
+  padding: 8px 12px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 4px;
+  margin: 2px;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+th,
+td {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.qty {
+  display: inline-block;
+  margin: 0 8px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.summary {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid #ddd;
+}
+
+.payment-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+input,
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.checkout-button {
+  margin-top: 8px;
+  background: #16a34a;
+}
+
+.checkout-button:hover {
+  background: #15803d;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.receipt-box {
+  margin-top: 20px;
+  padding: 16px;
+  background: #dcfce7;
+  border-radius: 8px;
+  border: 1px solid #86efac;
+}
