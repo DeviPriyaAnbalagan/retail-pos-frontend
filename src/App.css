@@ -124,3 +124,29 @@ select {
   border-radius: 8px;
   border: 1px solid #86efac;
 }
+
+.search-section {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.pagination-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.pagination-section button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}

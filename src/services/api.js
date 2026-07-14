@@ -10,6 +10,22 @@ export async function getProducts(){
     return await response.json();
 }
 
+export async function searchProducts(searchText = "", pageNumber = 1, pageSize = 10) {
+  const queryParams = new URLSearchParams({
+    searchText: searchText,
+    pageNumber: pageNumber,
+    pageSize: pageSize
+  });
+
+  const response = await fetch(`${API_BASE_URL}/products/search?${queryParams}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to search products");
+  }
+
+  return await response.json();
+}
+
 export async function getProductsByBarcode(barcode) {
 
     const response = await fetch(`${API_BASE_URL}/products/barcode/${barcode}`);
