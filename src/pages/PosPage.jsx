@@ -41,6 +41,11 @@ function PosPage() {
         setMessage("");
         setReceipt(null);
 
+        if (product.stockQuantity <= 0) {
+            setMessage(`${product.name} is out of stock.`);
+            return;
+        }
+
         const existingItem = cartItems.find((item) => item.productId === product.id);
 
         if (existingItem) {
@@ -59,6 +64,7 @@ function PosPage() {
                     name: product.name,
                     price: product.price,
                     vatPercentage: product.vatPercentage,
+                    stockQuantity: product.stockQuantity,
                     quantity: 1
                 }
             ]);
@@ -66,6 +72,16 @@ function PosPage() {
     }
 
     function increaseQuantity(productId) {
+        setMessage("");
+
+        const cartItem = cartItems.find((item) => item.productId === productId);
+        if (!cartItem) {
+            return;
+        }
+        if (cartItem.quantity >= cartItem.stockQuantity) {
+            setMessage(`Only ${cartItem.stockQuantity} units available for ${cartItem.name}.`);
+            return;
+        }
         setCartItems(
             cartItems.map((item) =>
                 item.productId === productId
@@ -105,65 +121,65 @@ function PosPage() {
     const totalAmount = subTotal + vatAmount;
 
     function handleSearch() {
-  setPageNumber(1);
-  loadProducts(searchText, 1);
-}
-
-function handleClearSearch() {
-  setSearchText("");
-  setPageNumber(1);
-  loadProducts("", 1);
-}
-
-function goToPreviousPage() {
-  if (pageNumber > 1) {
-    const previousPage = pageNumber - 1;
-    setPageNumber(previousPage);
-    loadProducts(searchText, previousPage);
-  }
-}
-
-function goToNextPage() {
-  if (pageNumber < totalPages) {
-    const nextPage = pageNumber + 1;
-    setPageNumber(nextPage);
-    loadProducts(searchText, nextPage);
-  }
-}
-
-async function handleBarCodeScan(event) {
-
-    if(event.key !== "Enter"){
-        return;
+        setPageNumber(1);
+        loadProducts(searchText, 1);
     }
 
-    const barcode = barCodeInput.trim();
-
-    if(!barcode){
-        setMessage("Please enter or scan a barcode.");
-    return;
+    function handleClearSearch() {
+        setSearchText("");
+        setPageNumber(1);
+        loadProducts("", 1);
     }
 
-    try{
-        setMessage("");
-        setReceipt(null);
+    function goToPreviousPage() {
+        if (pageNumber > 1) {
+            const previousPage = pageNumber - 1;
+            setPageNumber(previousPage);
+            loadProducts(searchText, previousPage);
+        }
+    }
 
-        const product = await getProductsByBarcode(barcode);
+    function goToNextPage() {
+        if (pageNumber < totalPages) {
+            const nextPage = pageNumber + 1;
+            setPageNumber(nextPage);
+            loadProducts(searchText, nextPage);
+        }
+    }
 
-        if(product.quantity <= 0){
-            setMessage("Product is out of stock.");
+    async function handleBarCodeScan(event) {
+
+        if (event.key !== "Enter") {
             return;
         }
 
-        addToCart(product);
-        setBarCodeInput("");
+        const barcode = barCodeInput.trim();
+
+        if (!barcode) {
+            setMessage("Please enter or scan a barcode.");
+            return;
+        }
+
+        try {
+            setMessage("");
+            setReceipt(null);
+
+            const product = await getProductsByBarcode(barcode);
+
+            if (product.stockQuantity <= 0) {
+                setMessage("Product is out of stock.");
+                return;
+            }
+
+            addToCart(product);
+            setBarCodeInput("");
+        }
+        catch (error) {
+            setMessage("Product not found for this barcode.");
+        }
+
     }
-    catch(error){
-        setMessage("Product not found for this barcode.");
-    }
-    
-}
-    
+
     async function handleCheckout() {
         try {
             setMessage("");
@@ -171,6 +187,17 @@ async function handleBarCodeScan(event) {
 
             if (cartItems.length === 0) {
                 setMessage("Cart is empty.");
+                return;
+            }
+
+            const invalidStockItem = cartItems.find(
+                (item) => item.quantity > item.stockQuantity
+            );
+
+            if (invalidStockItem) {
+                setMessage(
+                    `Only ${invalidStockItem.stockQuantity} units available for ${invalidStockItem.name}.`
+                );
                 return;
             }
 
@@ -210,15 +237,15 @@ async function handleBarCodeScan(event) {
                 <div className="products-section">
                     <h2>Products</h2>
                     <div className="search-section">
-                    <input
-                        className="search-input"
-                        type="text"
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        placeholder="Search by product name or barcode"
-                    />
-                    <button onClick={handleSearch}>Search</button>
-  <button onClick={handleClearSearch}>Clear</button>
+                        <input
+                            className="search-input"
+                            type="text"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            placeholder="Search by product name or barcode"
+                        />
+                        <button onClick={handleSearch}>Search</button>
+                        <button onClick={handleClearSearch}>Clear</button>
                     </div>
                     <div className="product-grid">
                         {loading && <p>Loading products...</p>}
@@ -235,30 +262,30 @@ async function handleBarCodeScan(event) {
                         ))}
                     </div>
                     <div className="pagination-section">
-  <button onClick={goToPreviousPage} disabled={pageNumber <= 1}>
-    Previous
-  </button>
+                        <button onClick={goToPreviousPage} disabled={pageNumber <= 1}>
+                            Previous
+                        </button>
 
-  <span>
-    Page {pageNumber} of {totalPages}
-  </span>
+                        <span>
+                            Page {pageNumber} of {totalPages}
+                        </span>
 
-  <button onClick={goToNextPage} disabled={pageNumber >= totalPages}>
-    Next
-  </button>
-</div>
+                        <button onClick={goToNextPage} disabled={pageNumber >= totalPages}>
+                            Next
+                        </button>
+                    </div>
                 </div>
-<div className="barcode-section">
-    <h2>BarCode Scan</h2>
-    <input
-    className="barcode-input"
-    type="text"
-    value={barCodeInput}
-    onChange={(e) => setBarCodeInput(e.target.value)}
-    onKeyDown={handleBarCodeScan}
-    placeholder="Scan or type barcode and press Enter"
-    autoFocus/>
-</div>
+                <div className="barcode-section">
+                    <h2>BarCode Scan</h2>
+                    <input
+                        className="barcode-input"
+                        type="text"
+                        value={barCodeInput}
+                        onChange={(e) => setBarCodeInput(e.target.value)}
+                        onKeyDown={handleBarCodeScan}
+                        placeholder="Scan or type barcode and press Enter"
+                        autoFocus />
+                </div>
                 <div className="cart-section">
                     <h2>Cart</h2>
 
@@ -269,6 +296,7 @@ async function handleBarCodeScan(event) {
                             <thead>
                                 <tr>
                                     <th>Product</th>
+                                    <th>Available</th>
                                     <th>Qty</th>
                                     <th>Price</th>
                                     <th>Total</th>
@@ -279,6 +307,7 @@ async function handleBarCodeScan(event) {
                                 {cartItems.map((item) => (
                                     <tr key={item.productId}>
                                         <td>{item.name}</td>
+                                        <td>{item.stockQuantity}</td>
                                         <td>
                                             <button onClick={() => decreaseQuantity(item.productId)}>
                                                 -
