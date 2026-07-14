@@ -170,3 +170,39 @@ select {
   border-radius: 6px;
   font-size: 16px;
 }
+
+.confirmation-box {
+  margin-top: 20px;
+  padding: 16px;
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  border-radius: 8px;
+}
+
+.confirmation-box h2 {
+  margin-top: 0;
+}
+
+.confirmation-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.cancel-button {
+  background: #6b7280;
+}
+
+.cancel-button:hover {
+  background: #4b5563;
+}
+
+.receipt-box table {
+  margin-top: 12px;
+}
+
+.receipt-summary {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #86efac;
+}

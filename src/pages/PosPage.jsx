@@ -15,6 +15,7 @@ function PosPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [barCodeInput, setBarCodeInput] = useState("");
+    const [showConfirm, setShowConfirm] = useState(false);
 
     useEffect(() => {
         loadProducts("", 1);
@@ -180,32 +181,49 @@ function PosPage() {
 
     }
 
+    function validateCheckout() {
+        if (cartItems.length === 0) {
+            setMessage("Cart is empty.");
+            return false;
+        }
+
+        const invalidStockItem = cartItems.find(
+            (item) => item.quantity > item.stockQuantity
+        );
+
+        if (invalidStockItem) {
+            setMessage(
+                `Only ${invalidStockItem.stockQuantity} units available for ${invalidStockItem.name}.`
+            );
+            return false;
+        }
+
+        if (!amountPaid || Number(amountPaid) < totalAmount) {
+            setMessage("Amount paid must be greater than or equal to total amount.");
+            return false;
+        }
+
+        return true;
+    }
+
+    function handleConfirmCheckoutClick() {
+        setMessage("");
+
+        const isValid = validateCheckout();
+
+        if (!isValid) {
+            return;
+        }
+
+        setShowConfirm(true);
+    }
+
     async function handleCheckout() {
         try {
             setMessage("");
             setReceipt(null);
 
-            if (cartItems.length === 0) {
-                setMessage("Cart is empty.");
-                return;
-            }
-
-            const invalidStockItem = cartItems.find(
-                (item) => item.quantity > item.stockQuantity
-            );
-
-            if (invalidStockItem) {
-                setMessage(
-                    `Only ${invalidStockItem.stockQuantity} units available for ${invalidStockItem.name}.`
-                );
-                return;
-            }
-
-            if (!amountPaid || Number(amountPaid) < totalAmount) {
-                setMessage("Amount paid must be greater than or equal to total amount.");
-                return;
-            }
-
+            
             const saleRequest = {
                 items: cartItems.map((item) => ({
                     productId: item.productId,
@@ -354,18 +372,69 @@ function PosPage() {
                             placeholder="Enter amount paid"
                         />
 
-                        <button className="checkout-button" onClick={handleCheckout}>
+                        <button className="checkout-button" onClick={handleConfirmCheckoutClick}>
                             Complete Sale
                         </button>
                     </div>
+                    {showConfirm && !receipt && (
+                        <div className="confirmation-box">
+                            <h2>Confirm Checkout</h2>
 
+                            <p>Total items: {cartItems.reduce((sum, item) => sum + item.quantity, 0)}</p>
+                            <p>Subtotal: {subTotal.toFixed(2)}</p>
+                            <p>VAT: {vatAmount.toFixed(2)}</p>
+                            <h3>Total: {totalAmount.toFixed(2)}</h3>
+                            <p>Payment Method: {paymentMethod}</p>
+                            <p>Amount Paid: {Number(amountPaid).toFixed(2)}</p>
+                            <p>Change: {(Number(amountPaid) - totalAmount).toFixed(2)}</p>
+
+                            <div className="confirmation-actions">
+                                <button onClick={handleCheckout}>Confirm Sale</button>
+                                <button className="cancel-button" onClick={() => setShowConfirm(false)}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    )}
                     {receipt && (
                         <div className="receipt-box">
                             <h2>Sale Completed</h2>
-                            <p>Receipt: {receipt.receiptNumber}</p>
-                            <p>Total: {receipt.totalAmount.toFixed(2)}</p>
-                            <p>Payment: {receipt.paymentMethod}</p>
-                            <p>Amount Paid: {receipt.amountPaid.toFixed(2)}</p>
+
+                            <p><strong>Receipt No:</strong> {receipt.receiptNumber}</p>
+                            <p><strong>Date:</strong> {new Date(receipt.saleDate).toLocaleString()}</p>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Unit Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {receipt.items.map((item, index) => (
+                                        <tr key={index}>
+                                            <td>{item.productName}</td>
+                                            <td>{item.quantity}</td>
+                                            <td>{item.unitPrice.toFixed(2)}</td>
+                                            <td>{item.lineTotal.toFixed(2)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+
+                            <div className="receipt-summary">
+                                <p><strong>Subtotal:</strong> {receipt.subTotal.toFixed(2)}</p>
+                                <p><strong>VAT:</strong> {receipt.vatAmount.toFixed(2)}</p>
+                                <h3>Total: {receipt.totalAmount.toFixed(2)}</h3>
+                                <p><strong>Payment:</strong> {receipt.paymentMethod}</p>
+                                <p><strong>Amount Paid:</strong> {receipt.amountPaid.toFixed(2)}</p>
+                                <p>
+                                    <strong>Change:</strong>{" "}
+                                    {(receipt.amountPaid - receipt.totalAmount).toFixed(2)}
+                                </p>
+                            </div>
                         </div>
                     )}
                 </div>
