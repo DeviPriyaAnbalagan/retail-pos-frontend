@@ -257,3 +257,29 @@ select {
 .delete-button:hover {
   background: #b91c1c;
 }
+
+.reports-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.report-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.report-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.report-summary-box {
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}

@@ -97,3 +97,31 @@ export async function deleteProduct(id) {
     throw new Error(errorMessage || "Failed to delete product");
   }
 }
+
+export async function getDailySalesReport(date) {
+  const queryParams = new URLSearchParams({
+    date: date
+  });
+
+  const response = await fetch(`${API_BASE_URL}/reports/daily-sales?${queryParams}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch daily sales report");
+  }
+
+  return await response.json();
+}
+
+export async function getLowStockProducts(threshold = 5) {
+  const queryParams = new URLSearchParams({
+    threshold: threshold
+  });
+
+  const response = await fetch(`${API_BASE_URL}/reports/low-stock?${queryParams}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch low stock products");
+  }
+
+  return await response.json();
+}

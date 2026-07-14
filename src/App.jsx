@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PosPage from "./pages/PosPage";
 import ProductManagementPage from "./pages/ProductManagementPage";
+import ReportsPage from "./pages/ReportsPage";
 
 function App()
 {
@@ -16,11 +17,13 @@ function App()
           <button onClick={() => setActivePage("products")}>
             Product Management
           </button>
+          <button onClick={() => setActivePage("reports")}>Reports</button>
         </div>
       </nav>
 
       {activePage === "pos" && <PosPage />}
       {activePage === "products" && <ProductManagementPage />}
+      {activePage === "reports" && <ReportsPage />}
     </>
   );
 }
