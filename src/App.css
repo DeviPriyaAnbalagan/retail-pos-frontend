@@ -150,3 +150,23 @@ select {
   background: #9ca3af;
   cursor: not-allowed;
 }
+
+.barcode-section {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.barcode-section h2 {
+  margin-top: 0;
+}
+
+.barcode-input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #2563eb;
+  border-radius: 6px;
+  font-size: 16px;
+}

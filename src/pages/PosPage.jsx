@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { searchProducts, createSale } from "../services/api";
+import { searchProducts, getProductsByBarcode, createSale } from "../services/api";
 import "../App.css";
 
 function PosPage() {
@@ -14,6 +14,7 @@ function PosPage() {
     const [pageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [barCodeInput, setBarCodeInput] = useState("");
 
     useEffect(() => {
         loadProducts("", 1);
@@ -129,6 +130,39 @@ function goToNextPage() {
     loadProducts(searchText, nextPage);
   }
 }
+
+async function handleBarCodeScan(event) {
+
+    if(event.key !== "Enter"){
+        return;
+    }
+
+    const barcode = barCodeInput.trim();
+
+    if(!barcode){
+        setMessage("Please enter or scan a barcode.");
+    return;
+    }
+
+    try{
+        setMessage("");
+        setReceipt(null);
+
+        const product = await getProductsByBarcode(barcode);
+
+        if(product.quantity <= 0){
+            setMessage("Product is out of stock.");
+            return;
+        }
+
+        addToCart(product);
+        setBarCodeInput("");
+    }
+    catch(error){
+        setMessage("Product not found for this barcode.");
+    }
+    
+}
     
     async function handleCheckout() {
         try {
@@ -214,7 +248,17 @@ function goToNextPage() {
   </button>
 </div>
                 </div>
-
+<div className="barcode-section">
+    <h2>BarCode Scan</h2>
+    <input
+    className="barcode-input"
+    type="text"
+    value={barCodeInput}
+    onChange={(e) => setBarCodeInput(e.target.value)}
+    onKeyDown={handleBarCodeScan}
+    placeholder="Scan or type barcode and press Enter"
+    autoFocus/>
+</div>
                 <div className="cart-section">
                     <h2>Cart</h2>
 
