@@ -206,3 +206,54 @@ select {
   padding-top: 12px;
   border-top: 1px solid #86efac;
 }
+
+.app-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.app-navbar h2 {
+  margin: 0;
+}
+
+.app-navbar div {
+  display: flex;
+  gap: 10px;
+}
+
+.management-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px;
+}
+
+.product-form-section,
+.product-list-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.product-form-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.delete-button {
+  background: #dc2626;
+}
+
+.delete-button:hover {
+  background: #b91c1c;
+}

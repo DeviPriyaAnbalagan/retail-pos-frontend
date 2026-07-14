@@ -54,3 +54,46 @@ export async function createSale(saleRequest) {
     return await response.json();
 }
 
+export async function createProduct(productRequest) {
+    
+    const response = await fetch(`${API_BASE_URL}/products`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(productRequest)
+    })
+
+     if (!response.ok) {
+    const errorMessage = await response.text();
+    throw new Error(errorMessage || "Failed to create product");
+  }
+
+    return await response.json();
+}
+
+export async function updateProduct(id, productRequest) {
+  const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(productRequest)
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.text();
+    throw new Error(errorMessage || "Failed to update product");
+  }
+
+  return await response.json();
+}
+
+export async function deleteProduct(id) {
+  const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.text();
+    throw new Error(errorMessage || "Failed to delete product");
+  }
+}
