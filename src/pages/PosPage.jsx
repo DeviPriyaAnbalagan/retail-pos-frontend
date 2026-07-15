@@ -293,7 +293,9 @@ function PosPage() {
                         </button>
                     </div>
                 </div>
-                <div className="barcode-section">
+                
+                <div className="cart-section">
+                    <div className="barcode-section">
                     <h2>BarCode Scan</h2>
                     <input
                         className="barcode-input"
@@ -304,7 +306,6 @@ function PosPage() {
                         placeholder="Scan or type barcode and press Enter"
                         autoFocus />
                 </div>
-                <div className="cart-section">
                     <h2>Cart</h2>
 
                     {cartItems.length === 0 ? (
