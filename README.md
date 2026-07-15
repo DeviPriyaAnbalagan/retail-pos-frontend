@@ -154,6 +154,7 @@ The backend remains the source of truth for price, VAT, stock, receipt number, a
 ### Barcode Quick Scan
 
 ![Barcode Scan](screenshots/barcode-scan.png)
+![Barcode Scan Add to Cart](screenshots/barcode-scan_add_cart.png)
 
 ### Checkout Confirmation
 
@@ -170,3 +171,4 @@ The backend remains the source of truth for price, VAT, stock, receipt number, a
 ### Reports
 
 ![Reports](screenshots/reports-screen.png)
+![Reports](screenshots/reports-screen-2.png)
